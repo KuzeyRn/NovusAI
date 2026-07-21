@@ -5,98 +5,268 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Novus — Universal AI</title>
 <script src="https://js.puter.com/v2/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-void: #05070d;
-    --bg-panel: #0b0f1a;
-    --bg-panel-2: #10162468;
-    --line: rgba(120,160,255,0.14);
-    --ink: #e8edf9;
-    --ink-dim: #8b95ad;
-    --core: #5ad8ff;
-    --core-2: #7c6bff;
-    --core-warm: #ff6b8b;
-    --radius: 16px;
+    --bg: #060710;
+    --bg-elev: #0c0e19;
+    --sidebar-bg: #08090f;
+    --panel: #10121f;
+    --panel-2: #0d0f1a;
+    --line: rgba(150,160,255,0.11);
+    --line-strong: rgba(150,160,255,0.22);
+    --ink: #eef0fb;
+    --ink-dim: #8791ab;
+    --ink-faint: #565f78;
+    --teal: #45e0d8;
+    --violet: #8b6bff;
+    --magenta: #ff5c9e;
+    --radius: 14px;
+    --radius-lg: 20px;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
 
   * { box-sizing: border-box; }
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
+  html, body { height: 100%; margin: 0; padding: 0; }
   body {
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-family: var(--font-body);
     background:
-      radial-gradient(1200px 700px at 15% -10%, rgba(90,216,255,0.10), transparent 60%),
-      radial-gradient(900px 600px at 100% 0%, rgba(124,107,255,0.10), transparent 55%),
-      var(--bg-void);
+      radial-gradient(1100px 640px at 18% -8%, rgba(69,224,216,0.08), transparent 60%),
+      radial-gradient(900px 560px at 100% 0%, rgba(139,107,255,0.10), transparent 55%),
+      var(--bg);
     color: var(--ink);
     height: 100dvh;
     display: flex;
-    flex-direction: column;
     overflow: hidden;
   }
+  ::selection { background: rgba(69,224,216,0.28); }
 
-  /* ---------- HEADER ---------- */
+  /* ============ LOGO MARK ============ */
+  .novus-mark {
+    display: block;
+    flex-shrink: 0;
+  }
+  .novus-mark .bars {
+    stroke: url(#markGrad);
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .novus-mark .node {
+    fill: url(#nodeGrad);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nodePulse 2.8s ease-in-out infinite;
+  }
+  .novus-mark .ring {
+    fill: none;
+    stroke: rgba(69,224,216,0.55);
+    stroke-width: 1.4;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ringOrbit 3.4s linear infinite;
+  }
+  @keyframes nodePulse {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.18); filter: brightness(1.4); }
+  }
+  @keyframes ringOrbit {
+    0% { transform: scale(0.85) rotate(0deg); opacity: 0.9; }
+    100% { transform: scale(1.9) rotate(180deg); opacity: 0; }
+  }
+
+  /* ============ SIDEBAR ============ */
+  #sidebar {
+    width: 276px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.25s ease, transform 0.25s ease;
+    overflow: hidden;
+    position: relative;
+    z-index: 30;
+  }
+  body.sidebar-collapsed #sidebar { width: 0; border-right: none; }
+
+  #sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px 14px;
+    flex-shrink: 0;
+    min-width: 276px;
+  }
+  #sidebar-header .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.02rem;
+    letter-spacing: 0.02em;
+    background: linear-gradient(90deg, #f4f7ff 10%, var(--teal) 60%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  #new-chat-btn {
+    min-width: 244px;
+    margin: 4px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background: linear-gradient(135deg, rgba(69,224,216,0.10), rgba(139,107,255,0.08));
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.18s;
+    flex-shrink: 0;
+  }
+  #new-chat-btn:hover {
+    border-color: var(--teal);
+    box-shadow: 0 0 16px rgba(69,224,216,0.18);
+  }
+  #new-chat-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  #chat-list-label {
+    min-width: 244px;
+    padding: 6px 20px 6px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    flex-shrink: 0;
+  }
+
+  #chat-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 2px 10px 12px;
+    min-width: 276px;
+  }
+  .chat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--ink-dim);
+    font-size: 0.84rem;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+    position: relative;
+    transition: background 0.15s, color 0.15s;
+  }
+  .chat-item:hover { background: rgba(255,255,255,0.03); color: var(--ink); }
+  .chat-item.active {
+    background: rgba(69,224,216,0.07);
+    border-color: rgba(69,224,216,0.25);
+    color: var(--ink);
+  }
+  .chat-item .chat-title {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .chat-item .chat-delete {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-faint);
+    opacity: 0;
+    transition: 0.15s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .chat-item:hover .chat-delete { opacity: 1; }
+  .chat-item .chat-delete:hover { color: var(--magenta); background: rgba(255,92,158,0.1); }
+  .chat-item .chat-delete svg { width: 14px; height: 14px; }
+  .empty-list-hint {
+    min-width: 244px;
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+    padding: 10px 10px;
+    line-height: 1.5;
+  }
+
+  #sidebar-footer {
+    min-width: 276px;
+    flex-shrink: 0;
+    padding: 12px 18px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  /* ============ MAIN COLUMN ============ */
+  #main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    position: relative;
+  }
+
   header {
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     padding: 14px 20px;
-    background: linear-gradient(180deg, rgba(10,14,24,0.95), rgba(10,14,24,0.75));
+    background: linear-gradient(180deg, rgba(6,7,16,0.96), rgba(6,7,16,0.75));
     border-bottom: 1px solid var(--line);
     backdrop-filter: blur(14px);
     position: relative;
     z-index: 10;
   }
-
-  .core-orb {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    position: relative;
+  #sidebar-toggle {
     flex-shrink: 0;
-    background: radial-gradient(circle at 35% 30%, #d8f6ff 0%, var(--core) 35%, var(--core-2) 75%, transparent 100%);
-    box-shadow: 0 0 14px rgba(90,216,255,0.7), 0 0 34px rgba(124,107,255,0.35);
-    animation: pulse 2.6s ease-in-out infinite;
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-dim);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: 0.15s;
   }
-  .core-orb::after {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 1px solid rgba(90,216,255,0.35);
-    animation: ring 2.6s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); filter: brightness(1); }
-    50% { transform: scale(1.08); filter: brightness(1.25); }
-  }
-  @keyframes ring {
-    0% { transform: scale(0.9); opacity: 0.8; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
+  #sidebar-toggle:hover { color: var(--ink); border-color: var(--line-strong); background: rgba(255,255,255,0.03); }
+  #sidebar-toggle svg { width: 17px; height: 17px; }
 
+  header .titles { min-width: 0; }
   header h1 {
-    font-size: 1.05rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
     font-weight: 600;
     margin: 0;
-    letter-spacing: 0.02em;
-    background: linear-gradient(90deg, #f2f6ff 10%, var(--core) 55%, var(--core-2) 90%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   header .sub {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--ink-dim);
-    margin-top: 2px;
-    letter-spacing: 0.03em;
+    margin-top: 1px;
+    letter-spacing: 0.02em;
   }
   .status-pill {
     margin-left: auto;
+    flex-shrink: 0;
     font-size: 0.68rem;
     color: var(--ink-dim);
     border: 1px solid var(--line);
@@ -109,11 +279,13 @@
   }
   .status-dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: #4bffb0;
-    box-shadow: 0 0 8px #4bffb0;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
   }
 
-  /* ---------- CHAT AREA ---------- */
+  #sidebar-backdrop { display: none; }
+
+  /* ============ CHAT AREA ============ */
   #chat-area {
     flex: 1 1 auto;
     overflow-y: auto;
@@ -125,85 +297,87 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
 
   .msg-row {
     display: flex;
-    gap: 10px;
+    gap: 11px;
     align-items: flex-start;
-    animation: rise 0.35s ease both;
+    animation: rise 0.32s ease both;
   }
   @keyframes rise {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(7px); }
     to { opacity: 1; transform: translateY(0); }
   }
   .msg-row.user { flex-direction: row-reverse; }
 
   .avatar {
     flex: 0 0 auto;
-    width: 28px; height: 28px;
-    border-radius: 50%;
+    width: 30px; height: 30px;
+    border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem;
     margin-top: 2px;
   }
   .avatar.ai {
-    background: radial-gradient(circle at 35% 30%, #cdf3ff, var(--core) 40%, var(--core-2) 100%);
-    box-shadow: 0 0 12px rgba(90,216,255,0.5);
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
   }
+  .avatar.ai svg { width: 20px; height: 20px; }
   .avatar.user {
     background: linear-gradient(135deg, #3a4260, #232840);
     border: 1px solid var(--line);
   }
+  .avatar.user svg { width: 16px; height: 16px; color: var(--ink-dim); }
 
   .bubble {
     max-width: 78%;
-    padding: 12px 15px;
+    padding: 13px 16px;
     border-radius: var(--radius);
-    line-height: 1.55;
+    line-height: 1.6;
     font-size: 0.94rem;
     word-wrap: break-word;
-    white-space: pre-wrap;
   }
+  .bubble p { margin: 0 0 10px; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .bubble ul, .bubble ol { margin: 6px 0 12px; padding-left: 22px; }
+  .bubble li { margin-bottom: 4px; }
   .msg-row.ai .bubble {
-    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
     border: 1px solid var(--line);
     border-top-left-radius: 4px;
-    box-shadow: 0 0 0 1px rgba(90,216,255,0.03), 0 6px 20px rgba(0,0,0,0.35);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
   }
   .msg-row.user .bubble {
-    background: linear-gradient(135deg, rgba(124,107,255,0.22), rgba(90,216,255,0.12));
-    border: 1px solid rgba(124,107,255,0.35);
+    background: linear-gradient(135deg, rgba(139,107,255,0.20), rgba(69,224,216,0.10));
+    border: 1px solid rgba(139,107,255,0.32);
     border-top-right-radius: 4px;
+    white-space: pre-wrap;
   }
 
   .bubble code {
     background: rgba(255,255,255,0.07);
-    padding: 2px 5px;
-    border-radius: 4px;
+    padding: 2px 6px;
+    border-radius: 5px;
     font-size: 0.85em;
     font-family: 'SF Mono', Consolas, monospace;
   }
   .bubble pre {
-    background: #05070d;
+    background: #05060d;
     border: 1px solid var(--line);
-    padding: 10px 12px;
+    padding: 12px 14px;
     border-radius: 10px;
     overflow-x: auto;
     font-size: 0.82em;
+    margin: 10px 0;
   }
   .bubble pre code { background: none; padding: 0; }
 
-  .typing {
-    display: flex;
-    gap: 4px;
-    padding: 14px 15px;
-  }
+  .typing { display: flex; gap: 4px; padding: 15px 16px; }
   .typing span {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--core);
-    box-shadow: 0 0 6px var(--core);
+    background: var(--teal);
+    box-shadow: 0 0 6px var(--teal);
     animation: bounce 1.1s infinite ease-in-out;
   }
   .typing span:nth-child(2) { animation-delay: 0.15s; }
@@ -216,54 +390,65 @@
   .welcome {
     text-align: center;
     color: var(--ink-dim);
-    padding: 40px 20px 10px;
-    max-width: 520px;
+    padding: 48px 20px 10px;
+    max-width: 560px;
     margin: 0 auto;
   }
-  .welcome .big-orb {
-    width: 56px; height: 56px; margin: 0 auto 18px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #d8f6ff, var(--core) 40%, var(--core-2) 100%);
-    box-shadow: 0 0 30px rgba(90,216,255,0.5), 0 0 60px rgba(124,107,255,0.25);
-    animation: pulse 3s ease-in-out infinite;
-  }
+  .welcome .big-mark { margin: 0 auto 20px; width: 60px; height: 60px; }
   .welcome h2 {
+    font-family: var(--font-display);
     color: var(--ink);
-    font-size: 1.2rem;
-    margin: 0 0 8px;
+    font-size: 1.3rem;
+    margin: 0 0 10px;
+    font-weight: 600;
   }
-  .welcome p { font-size: 0.85rem; line-height: 1.6; margin: 0; }
+  .welcome p { font-size: 0.87rem; line-height: 1.65; margin: 0; }
+  .capability-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .cap-tag {
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+    color: var(--ink-faint);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    letter-spacing: 0.01em;
+  }
   .chips {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
-    margin-top: 18px;
+    margin-top: 22px;
   }
   .chip {
     border: 1px solid var(--line);
     background: rgba(255,255,255,0.02);
     color: var(--ink-dim);
-    padding: 7px 13px;
+    padding: 8px 14px;
     border-radius: 999px;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.18s;
   }
   .chip:hover {
     color: var(--ink);
-    border-color: var(--core);
-    box-shadow: 0 0 10px rgba(90,216,255,0.25);
+    border-color: var(--teal);
+    box-shadow: 0 0 12px rgba(69,224,216,0.2);
   }
 
-  /* ---------- INPUT BAR ---------- */
+  /* ============ INPUT BAR ============ */
   #input-bar {
     flex: 0 0 auto;
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-    background: linear-gradient(0deg, rgba(10,14,24,0.97), rgba(10,14,24,0.85));
+    background: linear-gradient(0deg, rgba(6,7,16,0.97), rgba(6,7,16,0.85));
     border-top: 1px solid var(--line);
     backdrop-filter: blur(14px);
-    z-index: 10;
   }
   #input-inner {
     max-width: 780px;
@@ -271,15 +456,15 @@
     display: flex;
     align-items: flex-end;
     gap: 10px;
-    background: var(--bg-panel);
+    background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 20px;
     padding: 8px 8px 8px 16px;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   #input-inner:focus-within {
-    border-color: var(--core);
-    box-shadow: 0 0 0 3px rgba(90,216,255,0.12), 0 0 20px rgba(90,216,255,0.15);
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(69,224,216,0.10), 0 0 20px rgba(69,224,216,0.14);
   }
   #msg-input {
     flex: 1 1 auto;
@@ -288,13 +473,13 @@
     outline: none;
     resize: none;
     color: var(--ink);
+    font-family: var(--font-body);
     font-size: 0.94rem;
-    font-family: inherit;
     line-height: 1.4;
     max-height: 140px;
     padding: 8px 0;
   }
-  #msg-input::placeholder { color: var(--ink-dim); }
+  #msg-input::placeholder { color: var(--ink-faint); }
 
   #send-btn {
     flex: 0 0 auto;
@@ -302,13 +487,13 @@
     cursor: pointer;
     width: 42px; height: 42px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--core), var(--core-2));
-    color: #05070d;
+    background: linear-gradient(135deg, var(--teal), var(--violet));
+    color: #05060d;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 16px rgba(90,216,255,0.45);
+    box-shadow: 0 0 16px rgba(69,224,216,0.4);
     transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
   }
-  #send-btn:hover:not(:disabled) { transform: scale(1.06); box-shadow: 0 0 22px rgba(90,216,255,0.65); }
+  #send-btn:hover:not(:disabled) { transform: scale(1.06); box-shadow: 0 0 22px rgba(69,224,216,0.6); }
   #send-btn:active:not(:disabled) { transform: scale(0.94); }
   #send-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
   #send-btn svg { width: 18px; height: 18px; }
@@ -316,28 +501,53 @@
   .hint {
     text-align: center;
     font-size: 0.68rem;
-    color: var(--ink-dim);
+    color: var(--ink-faint);
     max-width: 780px;
     margin: 8px auto 0;
-    opacity: 0.7;
   }
+  .lookup-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.68rem;
+    color: var(--teal);
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+  .lookup-flag svg { width: 12px; height: 12px; }
 
-  /* scrollbar */
-  #chat-area::-webkit-scrollbar { width: 8px; }
-  #chat-area::-webkit-scrollbar-thumb {
-    background: rgba(120,160,255,0.2);
+  #chat-area::-webkit-scrollbar, #chat-list::-webkit-scrollbar { width: 8px; }
+  #chat-area::-webkit-scrollbar-thumb, #chat-list::-webkit-scrollbar-thumb {
+    background: rgba(150,160,255,0.18);
     border-radius: 10px;
   }
-  #chat-area::-webkit-scrollbar-track { background: transparent; }
+  #chat-area::-webkit-scrollbar-track, #chat-list::-webkit-scrollbar-track { background: transparent; }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0; height: 100%;
+      width: 82vw;
+      max-width: 300px;
+      transform: translateX(-100%);
+      box-shadow: none;
+    }
+    body:not(.sidebar-collapsed) #sidebar {
+      transform: translateX(0);
+      box-shadow: 20px 0 60px rgba(0,0,0,0.5);
+    }
+    body:not(.sidebar-collapsed) #sidebar-backdrop {
+      display: block;
+      position: fixed; inset: 0;
+      background: rgba(2,3,8,0.6);
+      z-index: 25;
+    }
     header { padding: 12px 14px; }
     header h1 { font-size: 0.92rem; }
     header .sub { display: none; }
     .status-pill span.label { display: none; }
     .bubble { max-width: 86%; font-size: 0.92rem; }
     #chat-area { padding: 16px 10px 10px; }
-    .welcome { padding-top: 20px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -347,115 +557,326 @@
 </head>
 <body>
 
-<header>
-  <div class="core-orb"></div>
-  <div>
-    <h1>🚀 Novus — Universal AI</h1>
-    <div class="sub">one mind, every domain</div>
-  </div>
-  <div class="status-pill"><span class="status-dot"></span><span class="label">online</span></div>
-</header>
+<!-- shared SVG defs for the logo gradients -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="markGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#45e0d8"/>
+      <stop offset="100%" stop-color="#8b6bff"/>
+    </linearGradient>
+    <radialGradient id="nodeGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#e8fffd"/>
+      <stop offset="45%" stop-color="#45e0d8"/>
+      <stop offset="100%" stop-color="#8b6bff"/>
+    </radialGradient>
+  </defs>
+</svg>
 
-<main id="chat-area">
-  <div id="chat-inner">
-    <div class="welcome" id="welcome-block">
-      <div class="big-orb"></div>
-      <h2>Novus is ready.</h2>
-      <p>Code, copy, strategy, translation, travel, research, or just a straight answer — ask anything. Novus adapts to the task instantly.</p>
-      <div class="chips">
-        <div class="chip" data-prompt="Debug this JavaScript function for me.">Debug my code</div>
-        <div class="chip" data-prompt="Help me write a 3-day itinerary for Tokyo.">Plan a trip</div>
-        <div class="chip" data-prompt="Proofread and tighten this paragraph for me.">Proofread text</div>
-        <div class="chip" data-prompt="Give me a go-to-market strategy for a new app.">Business strategy</div>
+<div id="sidebar-backdrop"></div>
+
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <svg class="novus-mark" viewBox="0 0 48 48" width="26" height="26">
+      <path class="bars" d="M10,36 L10,10 L38,36 L38,10"/>
+      <circle class="ring" cx="38" cy="10" r="5"/>
+      <circle class="node" cx="38" cy="10" r="3.4"/>
+    </svg>
+    <span class="wordmark">NOVUS</span>
+  </div>
+
+  <button id="new-chat-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New chat
+  </button>
+
+  <div id="chat-list-label">Recent</div>
+  <div id="chat-list"></div>
+
+  <div id="sidebar-footer">Chats are stored only on this device.</div>
+</aside>
+
+<div id="main">
+  <header>
+    <button id="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="titles">
+      <h1 id="header-title">Novus — Universal AI</h1>
+      <div class="sub">one mind, every domain</div>
+    </div>
+    <div class="status-pill"><span class="status-dot"></span><span class="label">online</span></div>
+  </header>
+
+  <main id="chat-area">
+    <div id="chat-inner">
+      <div class="welcome" id="welcome-block">
+        <svg class="novus-mark big-mark" viewBox="0 0 48 48">
+          <path class="bars" d="M10,36 L10,10 L38,36 L38,10"/>
+          <circle class="ring" cx="38" cy="10" r="5"/>
+          <circle class="node" cx="38" cy="10" r="3.4"/>
+        </svg>
+        <h2>Novus is ready.</h2>
+        <p>Code, writing, strategy, translation, research, travel, career moves — ask in any language, get a straight answer.</p>
+        <div class="capability-row">
+          <span class="cap-tag">Coding &amp; debugging</span>
+          <span class="cap-tag">Writing &amp; editing</span>
+          <span class="cap-tag">Career &amp; job search</span>
+          <span class="cap-tag">Business &amp; finance</span>
+          <span class="cap-tag">Translation</span>
+          <span class="cap-tag">Research</span>
+          <span class="cap-tag">Travel planning</span>
+        </div>
+        <div class="chips">
+          <div class="chip" data-prompt="Help me debug this JavaScript function.">Debug my code</div>
+          <div class="chip" data-prompt="Help me build a job search plan and a tracker for my applications.">Plan a job search</div>
+          <div class="chip" data-prompt="Proofread and tighten this paragraph for me.">Proofread text</div>
+          <div class="chip" data-prompt="Translate 'Where is the nearest train station?' into five languages.">Translate something</div>
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<div id="input-bar">
-  <div id="input-inner">
-    <textarea id="msg-input" rows="1" placeholder="Message Novus..."></textarea>
-    <button id="send-btn" aria-label="Send message">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 12L20 4L13 20L11 13L4 12Z" fill="currentColor"/>
-      </svg>
-    </button>
+  <div id="input-bar">
+    <div id="input-inner">
+      <textarea id="msg-input" rows="1" placeholder="Message Novus in any language..."></textarea>
+      <button id="send-btn" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12L20 4L13 20L11 13L4 12Z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+    <div class="hint">Novus can make mistakes. Verify important information.</div>
   </div>
-  <div class="hint">Novus can make mistakes. Verify important information.</div>
 </div>
 
 <script>
 (function () {
+  /* ============================================================
+     STATE
+  ============================================================ */
+  const STORAGE_KEY = 'novus_chats_v1';
+  let chats = [];          // [{id, title, messages:[{role,content}]}]
+  let currentChatId = null;
+
   const chatArea = document.getElementById('chat-area');
   const chatInner = document.getElementById('chat-inner');
   const welcomeBlock = document.getElementById('welcome-block');
   const input = document.getElementById('msg-input');
   const sendBtn = document.getElementById('send-btn');
+  const chatListEl = document.getElementById('chat-list');
+  const newChatBtn = document.getElementById('new-chat-btn');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+  const headerTitle = document.getElementById('header-title');
 
-  const SYSTEM_PROMPT = `You are Novus, a universal, super-intelligent AI companion. You are a single unified mind capable of expertly handling EVERY imaginable domain a person might bring to you, seamlessly switching modes based on what the user needs. Your core domains include, but are not limited to:
+  /* ============================================================
+     SYSTEM PROMPT
+  ============================================================ */
+  const SYSTEM_PROMPT = `You are Novus, a single unified AI mind built to be genuinely useful across nearly every domain a person could bring to you, in any language they choose.
 
-1. WRITING & CONTENT: proofreading, copyediting, creative writing, storytelling, scriptwriting, media/video scripts, poetry, blog posts, marketing copy, essays, and tone/style adaptation.
-2. CODING & ENGINEERING: full-stack development, debugging, code review, system architecture, algorithms, database design, DevOps, and technical problem-solving across any language or framework. Always give complete, correct, runnable code with brief explanations.
-3. BUSINESS & STRATEGY: business plans, marketing strategy, financial analysis, budgeting, productivity systems, project planning, negotiation prep, and startup strategy.
-4. LANGUAGE & COMMUNICATION: multilingual translation, grammar correction, tone adjustment, and cross-cultural communication guidance. Preserve meaning and nuance, not just literal words.
-5. TRAVEL & LOGISTICS: itinerary building, destination recommendations, logistics planning, packing lists, and step-by-step execution plans for real-world tasks.
-6. GENERAL INTELLIGENCE & RESEARCH: logic puzzles, math, science, academic explanations, deep research breakdowns, and structured analysis of complex topics.
+LANGUAGE: Detect and respond fluently in whatever language the user writes in (or switches to mid-conversation), including translating between languages, explaining idioms, adjusting tone for formality/culture, and handling mixed-language input gracefully. Never force English if the user isn't using it.
 
-PERSONA:
-- Warm, direct, and smart — never robotic, never needlessly verbose.
-- Confident but honest: say clearly when you're uncertain, and never fabricate facts, sources, or citations.
-- Adaptive: match the user's tone and the complexity of the task. Keep casual chats light; go deep and structured for technical or academic requests.
-- Proactive: if a request is ambiguous, make a reasonable assumption and proceed, or ask one crisp clarifying question — don't stall with lists of questions.
-- Format for readability: use headers, bullet points, numbered steps, and code blocks (with language tags) where they genuinely help; avoid clutter otherwise.
-- Never say you "can't" help with something in your domain list above — figure out the most useful angle and deliver.
+DOMAINS YOU HANDLE WELL:
+1. Writing & editing: proofreading, copyediting, creative writing, scripts, essays, marketing copy, tone/style rewrites.
+2. Coding & engineering: full-stack development, debugging, architecture, code review, algorithms, any language or framework — give complete, runnable code with concise explanations.
+3. Career & job search: resumes, cover letters, LinkedIn profiles, outreach messages, interview prep, negotiation scripts, application trackers, and structured job-search strategy and plans.
+4. Business & finance: business plans, marketing strategy, budgeting, financial modeling basics, productivity systems, project planning.
+5. Translation & cross-cultural communication: accurate, nuance-preserving translation and communication guidance between languages and cultures.
+6. Research & general intelligence: math, science, logic, structured breakdowns of complex or academic topics, comparisons, and analysis.
+7. Travel & real-world logistics: itineraries, packing lists, step-by-step execution plans for everyday tasks.
+
+HONESTY ABOUT LIMITS: You are running inside a static webpage with no backend, no stored API keys, and no ability to log into or take real actions inside third-party accounts or apps (no live LinkedIn/job-board scraping, no sending real emails, no OAuth). Sometimes a short "reference" snippet from a live web lookup will be provided to you in the conversation, labeled clearly — you may use it if relevant and up to date, but you do not have general open-ended live browsing beyond that. If asked to do something requiring real account access or live browsing you don't have, say so plainly in one sentence and then immediately offer the most useful thing you CAN do instead (draft the message, write the script, build the checklist, explain the steps). Never pretend to have taken an action you didn't actually take.
+
+PERSONA: Warm, direct, and sharp — never robotic, never bloated with filler. Confident but honest about uncertainty. Adaptive: casual for casual chat, structured and thorough for technical or high-stakes requests. If a request is ambiguous, make a reasonable assumption and proceed, or ask one crisp question — don't stall with a checklist of questions. Use headers, bullet points, numbered steps, and code blocks only where they genuinely help; keep everything else clean prose. Do not use emoji.
 
 You are Novus. Respond as Novus in every message.`;
 
-  const history = [];
-
-  function scrollToBottom() {
-    chatArea.scrollTop = chatArea.scrollHeight;
-  }
-
-  function removeWelcome() {
-    if (welcomeBlock && welcomeBlock.parentNode) {
-      welcomeBlock.remove();
+  /* ============================================================
+     PERSISTENCE
+  ============================================================ */
+  function loadChats() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      chats = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      chats = [];
     }
   }
-
-  function escapeHTML(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  function saveChats() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
+    } catch (e) { /* storage unavailable, fail silently */ }
   }
 
-  // Minimal markdown-ish rendering: code blocks, inline code, bold, line breaks
+  function getCurrentChat() {
+    return chats.find(c => c.id === currentChatId) || null;
+  }
+
+  /* ============================================================
+     SIDEBAR RENDERING
+  ============================================================ */
+  function renderSidebar() {
+    chatListEl.innerHTML = '';
+    if (chats.length === 0) {
+      const hint = document.createElement('div');
+      hint.className = 'empty-list-hint';
+      hint.textContent = 'Your conversations will show up here once you send a message.';
+      chatListEl.appendChild(hint);
+      return;
+    }
+    const sorted = [...chats].sort((a, b) => b.updatedAt - a.updatedAt);
+    sorted.forEach(chat => {
+      const item = document.createElement('div');
+      item.className = 'chat-item' + (chat.id === currentChatId ? ' active' : '');
+
+      const title = document.createElement('div');
+      title.className = 'chat-title';
+      title.textContent = chat.title || 'New chat';
+
+      const del = document.createElement('button');
+      del.className = 'chat-delete';
+      del.setAttribute('aria-label', 'Delete chat');
+      del.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>';
+      del.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteChat(chat.id);
+      });
+
+      item.appendChild(title);
+      item.appendChild(del);
+      item.addEventListener('click', () => selectChat(chat.id));
+      chatListEl.appendChild(item);
+    });
+  }
+
+  function deleteChat(id) {
+    chats = chats.filter(c => c.id !== id);
+    saveChats();
+    if (currentChatId === id) {
+      currentChatId = null;
+      showWelcome();
+    }
+    renderSidebar();
+  }
+
+  function selectChat(id) {
+    currentChatId = id;
+    const chat = getCurrentChat();
+    renderMessagesFromChat(chat);
+    renderSidebar();
+    if (window.innerWidth <= 768) collapseSidebar();
+  }
+
+  function showWelcome() {
+    chatInner.innerHTML = '';
+    chatInner.appendChild(welcomeBlock);
+    headerTitle.textContent = 'Novus — Universal AI';
+  }
+
+  function renderMessagesFromChat(chat) {
+    chatInner.innerHTML = '';
+    if (!chat || chat.messages.length === 0) {
+      showWelcome();
+      return;
+    }
+    headerTitle.textContent = chat.title || 'Novus — Universal AI';
+    chat.messages.forEach(m => addMessageToDOM(m.role, m.content));
+    scrollToBottom();
+  }
+
+  /* ============================================================
+     SIDEBAR TOGGLE
+  ============================================================ */
+  function collapseSidebar() { document.body.classList.add('sidebar-collapsed'); }
+  function expandSidebar() { document.body.classList.remove('sidebar-collapsed'); }
+  function toggleSidebar() {
+    document.body.classList.toggle('sidebar-collapsed');
+  }
+  sidebarToggle.addEventListener('click', toggleSidebar);
+  sidebarBackdrop.addEventListener('click', collapseSidebar);
+  newChatBtn.addEventListener('click', () => {
+    currentChatId = null;
+    showWelcome();
+    renderSidebar();
+    if (window.innerWidth <= 768) collapseSidebar();
+    input.focus();
+  });
+
+  if (window.innerWidth <= 768) collapseSidebar();
+
+  /* ============================================================
+     MESSAGE RENDERING HELPERS
+  ============================================================ */
+  function scrollToBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
+
+  function escapeHTML(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function renderContent(raw) {
     let text = escapeHTML(raw);
 
-    // fenced code blocks ```lang\ncode```
+    // fenced code blocks
     text = text.replace(/```([a-zA-Z0-9]*)\n?([\s\S]*?)```/g, function (_, lang, code) {
       return '<pre><code>' + code.replace(/\n$/, '') + '</code></pre>';
     });
 
-    // inline code
-    text = text.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    // split remaining text on pre blocks, process lists/paragraphs on the rest
+    const parts = text.split(/(<pre>[\s\S]*?<\/pre>)/g);
+    text = parts.map(part => {
+      if (part.startsWith('<pre>')) return part;
+      let p = part;
+      p = p.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+      p = p.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
-    // bold
-    text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      const lines = p.split('\n');
+      let html = '';
+      let listBuffer = [];
+      let listType = null;
+
+      function flushList() {
+        if (listBuffer.length) {
+          const tag = listType === 'ol' ? 'ol' : 'ul';
+          html += '<' + tag + '>' + listBuffer.map(li => '<li>' + li + '</li>').join('') + '</' + tag + '>';
+          listBuffer = [];
+          listType = null;
+        }
+      }
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        const ulMatch = /^[-*]\s+(.*)/.exec(trimmed);
+        const olMatch = /^\d+\.\s+(.*)/.exec(trimmed);
+        if (ulMatch) {
+          if (listType && listType !== 'ul') flushList();
+          listType = 'ul';
+          listBuffer.push(ulMatch[1]);
+        } else if (olMatch) {
+          if (listType && listType !== 'ol') flushList();
+          listType = 'ol';
+          listBuffer.push(olMatch[1]);
+        } else {
+          flushList();
+          if (trimmed.length) html += '<p>' + line + '</p>';
+        }
+      });
+      flushList();
+      return html;
+    }).join('');
 
     return text;
   }
 
-  function addMessage(role, content) {
-    removeWelcome();
+  const AI_ICON = '<svg viewBox="0 0 48 48" width="20" height="20"><path d="M10,36 L10,10 L38,36 L38,10" stroke="url(#markGrad)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="10" r="3.4" fill="url(#nodeGrad)"/></svg>';
+  const USER_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+
+  function addMessageToDOM(role, content) {
     const row = document.createElement('div');
     row.className = 'msg-row ' + (role === 'user' ? 'user' : 'ai');
 
     const avatar = document.createElement('div');
     avatar.className = 'avatar ' + (role === 'user' ? 'user' : 'ai');
-    avatar.textContent = role === 'user' ? '🧑' : '🚀';
+    avatar.innerHTML = role === 'user' ? USER_ICON : AI_ICON;
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
@@ -464,19 +885,17 @@ You are Novus. Respond as Novus in every message.`;
     row.appendChild(avatar);
     row.appendChild(bubble);
     chatInner.appendChild(row);
-    scrollToBottom();
     return bubble;
   }
 
   function addTypingIndicator() {
-    removeWelcome();
     const row = document.createElement('div');
     row.className = 'msg-row ai';
     row.id = 'typing-row';
 
     const avatar = document.createElement('div');
     avatar.className = 'avatar ai';
-    avatar.textContent = '🚀';
+    avatar.innerHTML = AI_ICON;
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble typing';
@@ -487,7 +906,6 @@ You are Novus. Respond as Novus in every message.`;
     chatInner.appendChild(row);
     scrollToBottom();
   }
-
   function removeTypingIndicator() {
     const row = document.getElementById('typing-row');
     if (row) row.remove();
@@ -498,6 +916,45 @@ You are Novus. Respond as Novus in every message.`;
     input.style.height = Math.min(input.scrollHeight, 140) + 'px';
   }
 
+  /* ============================================================
+     LIVE REFERENCE LOOKUP (Wikipedia — real, free, no key)
+     Genuine best-effort grounding, not a general web browser.
+     Fails silently if offline or blocked; never fakes a result.
+  ============================================================ */
+  async function wikiLookup(query) {
+    try {
+      const searchUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
+        encodeURIComponent(query) + '&format=json&origin=*&srlimit=1';
+      const searchRes = await fetch(searchUrl);
+      if (!searchRes.ok) return null;
+      const searchData = await searchRes.json();
+      const hit = searchData?.query?.search?.[0];
+      if (!hit) return null;
+
+      const title = hit.title;
+      const summaryUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
+      const summaryRes = await fetch(summaryUrl);
+      if (!summaryRes.ok) return null;
+      const summaryData = await summaryRes.json();
+      if (!summaryData.extract) return null;
+
+      return { title: summaryData.title, extract: summaryData.extract, url: summaryData.content_urls?.desktop?.page || null };
+    } catch (e) {
+      return null; // offline, blocked, or no match — skip silently, never fabricate
+    }
+  }
+
+  function looksLikeLookupWorthy(text) {
+    // Heuristic: skip lookups for short greetings, code, or clearly non-factual chat.
+    if (text.length < 8) return false;
+    if (/```/.test(text)) return false;
+    const chatty = /^(hi|hello|hey|thanks|thank you|ok|okay|sup|yo)\b/i.test(text.trim());
+    return !chatty;
+  }
+
+  /* ============================================================
+     SEND MESSAGE
+  ============================================================ */
   async function sendMessage(text) {
     if (!text || !text.trim()) return;
     text = text.trim();
@@ -506,15 +963,48 @@ You are Novus. Respond as Novus in every message.`;
     autoResize();
     sendBtn.disabled = true;
 
-    addMessage('user', text);
-    history.push({ role: 'user', content: text });
+    // ensure we have an active chat record
+    if (!currentChatId) {
+      const id = 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+      chats.push({ id, title: text.slice(0, 46), messages: [], updatedAt: Date.now() });
+      currentChatId = id;
+    }
+    const chat = getCurrentChat();
+    chatInner.innerHTML = ''; // clear welcome if present
+
+    addMessageToDOM('user', text);
+    chat.messages.push({ role: 'user', content: text });
+    chat.updatedAt = Date.now();
+    if (!chat.title) chat.title = text.slice(0, 46);
+    headerTitle.textContent = chat.title;
+    saveChats();
+    renderSidebar();
+    scrollToBottom();
 
     addTypingIndicator();
 
+    // best-effort live reference lookup, non-blocking to correctness if it fails
+    let referenceBlock = '';
+    if (looksLikeLookupWorthy(text)) {
+      const ref = await wikiLookup(text);
+      if (ref) {
+        referenceBlock = `\n\n[Live reference — Wikipedia: "${ref.title}": ${ref.extract}]`;
+      }
+    }
+
     try {
+      const conversation = chat.messages.map(m => ({ role: m.role, content: m.content }));
+      // attach the reference only to the latest user turn, not stored permanently
+      if (referenceBlock) {
+        conversation[conversation.length - 1] = {
+          role: 'user',
+          content: text + referenceBlock
+        };
+      }
+
       const messages = [
         { role: 'system', content: SYSTEM_PROMPT },
-        ...history
+        ...conversation
       ];
 
       const response = await puter.ai.chat(messages, { model: 'gpt-5-nano' });
@@ -534,12 +1024,24 @@ You are Novus. Respond as Novus in every message.`;
       }
 
       removeTypingIndicator();
-      addMessage('ai', aiText || "I couldn't generate a response — try rephrasing that.");
-      history.push({ role: 'assistant', content: aiText });
+
+      if (referenceBlock) {
+        const flag = document.createElement('div');
+        flag.className = 'lookup-flag';
+        flag.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> checked a live reference';
+        chatInner.appendChild(flag);
+      }
+
+      addMessageToDOM('ai', aiText || "I couldn't generate a response — try rephrasing that.");
+      chat.messages.push({ role: 'assistant', content: aiText });
+      chat.updatedAt = Date.now();
+      saveChats();
+      renderSidebar();
+      scrollToBottom();
 
     } catch (err) {
       removeTypingIndicator();
-      addMessage('ai', "⚠️ Something went wrong reaching the AI engine: " + (err && err.message ? err.message : String(err)));
+      addMessageToDOM('ai', "Something went wrong reaching the AI engine: " + (err && err.message ? err.message : String(err)));
       console.error(err);
     } finally {
       sendBtn.disabled = false;
@@ -548,22 +1050,24 @@ You are Novus. Respond as Novus in every message.`;
   }
 
   sendBtn.addEventListener('click', () => sendMessage(input.value));
-
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(input.value);
     }
   });
-
   input.addEventListener('input', autoResize);
 
   document.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      sendMessage(chip.getAttribute('data-prompt'));
-    });
+    chip.addEventListener('click', () => sendMessage(chip.getAttribute('data-prompt')));
   });
 
+  /* ============================================================
+     INIT
+  ============================================================ */
+  loadChats();
+  renderSidebar();
+  showWelcome();
   input.focus();
 })();
 </script>
